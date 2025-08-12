@@ -1,0 +1,408 @@
+
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>foton VR 중학교 1학년 – 주제/챕터 탐색</title>
+<style>
+  /* ===== fotonvr.com 느낌을 살린 전체 페이지 스타일 ===== */
+  :root{
+    --brand:#f06a21;
+    --brand-2:#02d1c6; /* 그라데이션 포인트 */
+    --ink:#0b1533;
+    --muted:#b6c0d3;
+    --bg-deep:#0a0b2e;
+    --bg-mid:#251b57;
+    --bg-top:#512b79;
+    --line:rgba(255,255,255,.14);
+    --card:#10163a;
+    --radius:18px;
+    --pill:9999px;
+    --shadow:0 14px 30px rgba(0,0,0,.28);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    color:#eef3ff;
+    font-family: Inter, Pretendard, -apple-system, Segoe UI, Roboto, 'Noto Sans KR', Arial, sans-serif;
+    background:
+      radial-gradient(1200px 600px at 80% 10%, rgba(2,209,198,.18), transparent 60%),
+      radial-gradient(900px 500px at 10% 20%, rgba(240,106,33,.22), transparent 60%),
+      linear-gradient(140deg, var(--bg-top), var(--bg-mid) 40%, var(--bg-deep) 80%);
+  }
+  /* 헤더 (엑셀 버튼 제거) */
+  header{position:sticky;top:0;z-index:40;background:rgba(10,11,46,.5);backdrop-filter: blur(10px);border-bottom:1px solid var(--line)}
+  .h-wrap{max-width:1200px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .logo{display:flex;align-items:center;gap:10px}
+  .logo-mark{background:#fff;color:var(--brand);font-weight:900;border-radius:var(--pill);padding:6px 12px}
+  .logo-title{font-weight:900;letter-spacing:.2px}
+  /* 히어로 섹션: 전체 배경형 이미지 + 과학 아이콘 */
+  .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+  .hero-wrap{max-width:1200px;margin:0 auto;padding:46px 16px;display:grid;grid-template-columns:1.1fr 1fr;gap:24px;align-items:center}
+  @media (max-width:980px){.hero-wrap{grid-template-columns:1fr;padding:28px 16px}}
+  .hero h1{margin:0;font-size:38px;line-height:1.2}
+  .accent{background:linear-gradient(90deg,var(--brand),var(--brand-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero-visual{position:relative;border-radius:28px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line)}
+  .hero-visual::after{content:'';position:absolute;inset:0;background:radial-gradient(800px 400px at 20% 10%, rgba(255,255,255,.08), transparent 60%)}
+  .hero-img{display:block;width:100%;height:auto}
+  /* 앱 레이아웃 */
+  .app{max-width:1200px;margin:0 auto;padding:18px 16px}
+  .app-grid{display:grid;grid-template-columns:320px 1fr;gap:16px}
+  @media (max-width:980px){.app-grid{grid-template-columns:1fr}}
+  /* 좌측 패널 */
+  .panel{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .panel-title{display:flex;align-items:center;gap:8px;padding:14px 16px;border-bottom:1px solid var(--line);font-weight:900}
+  .panel-body{padding:14px 16px}
+  .search{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:var(--pill);padding:10px 12px;background:rgba(255,255,255,.04)}
+  .search input{flex:1;border:0;outline:none;background:transparent;color:#fff}
+  .subject-list{display:flex;flex-direction:column;gap:10px;max-height:60vh;overflow:auto;padding-right:6px}
+  .pill-item{text-align:left;padding:12px 14px;border:1px solid var(--line);border-radius:var(--pill);background:rgba(255,255,255,.05);cursor:pointer;transition:.2s;font-weight:800}
+  .pill-item:hover{transform:translateY(-1px)}
+  .pill-item.active{background:#fff;color:#0b1533}
+  .pill-sub{display:block;margin-top:4px;color:#c2cbe0;font-weight:600;font-size:12px}
+  /* 우측: 챕터 리스트 */
+  .section{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+  .section-bar{display:flex;align-items:end;justify-content:space-between;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line)}
+  .section-title{font-weight:900;font-size:18px}
+  .section-meta{color:#d0d7ea;font-size:13px}
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:12px}
+  @media (max-width:720px){.grid{grid-template-columns:1fr}}
+  .card{border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.04);overflow:hidden}
+  .row{display:flex;gap:12px;padding:12px}
+  .thumb{width:64px;height:64px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .thumb img{width:100%;height:100%;object-fit:cover}
+  .meta{color:#cfd6ea;font-size:13px;margin-top:3px}
+  .nums{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .nums .tag{background:rgba(255,255,255,.08);border:1px solid var(--line);padding:6px 10px;border-radius:12px;font-weight:900;font-size:14px}
+  .actions{display:flex;gap:8px;padding:0 12px 14px 12px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:var(--pill);background:linear-gradient(90deg,var(--brand),var(--brand-2));border:0;color:#0b1533;font-weight:900;cursor:pointer}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:#eef3ff}
+  /* 펼침 패널(애니메이션) */
+  .expand{max-height:0;overflow:hidden;transition:max-height .35s ease, opacity .3s ease;opacity:0;border-top:1px solid var(--line)}
+  .expand.open{opacity:1}
+  .expand-inner{padding:14px}
+  .preview{width:100%;max-height:60vh;display:flex;align-items:center;justify-content:center;background:#0e1333;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  
+.preview img {
+    max-width: 100%;
+    max-height: 80vh !important; /* 크게 확대 */
+    object-fit: contain;
+    background: #000;
+}
+
+  .expand-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .close-btn{border:1px solid var(--line);background:transparent;color:#fff;border-radius:var(--pill);padding:8px 12px;cursor:pointer}
+  /* 빈 상태 */
+  .empty{margin:12px;padding:16px;text-align:center;color:#cfd6ea;border:1px dashed var(--line);border-radius:14px}
+
+.subject-list button, 
+.subject-list .pill {
+    color: white !important;
+}
+
+
+.subject-list button.active, 
+.subject-list .pill.active {
+    color: black !important;
+}
+
+
+/* === 라이트박스 === */
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,.88); display:none; align-items:center; justify-content:center; z-index:9999; padding:24px;}
+.lightbox.show{display:flex;}
+.lightbox img{max-width:95vw; max-height:95vh; object-fit:contain; display:block; background:#000; border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,.6);}
+.lightbox .close{position:absolute; top:16px; right:16px; background:#ffffff; color:#111827; border:1px solid #e5e7eb; border-radius:10px; padding:8px 12px; cursor:pointer; font-weight:700;}
+.lightbox .msg{color:#e5e7eb; font-size:14px;}
+
+
+/* 저장 토스트 */
+.toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%); background:#111827; color:#fff; border:1px solid #374151; border-radius:12px; padding:10px 14px; box-shadow:0 10px 24px rgba(0,0,0,.3); opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease; z-index:10000;}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(-6px);}
+
+</style>
+</head>
+<body>
+<header>
+<div class="h-wrap">
+<div class="logo">
+<span class="logo-mark">foton VR</span>
+<div class="logo-title">중학교 1학년 콘텐츠 탐색</div>
+</div>
+<!-- 상단 오른쪽 엑셀 불러오기 버튼 제거됨 -->
+</div>
+</header>
+<section class="hero">
+<div class="hero-wrap">
+<div>
+<h1>가상현실로 혁신하는 과학 교육</h1>
+<p style="margin-top:10px;color:#e0e6ff">3D VR 과학교육자료</p>
+</div>
+<div class="hero-visual">
+<img alt="foton style visual" class="hero-img" src="sandbox:/mnt/data/7eed1d74-b8b3-48df-9c38-aae3b93f96a6.png"/>
+</div>
+</div>
+</section>
+<div class="app">
+<div class="app-grid">
+<!-- Left: subject -->
+<aside class="panel">
+<div class="panel-title">📂 주제 선택</div>
+<div class="panel-body">
+<div class="search">
+<span>🔎</span>
+<input id="searchInput" placeholder="주제이름/챕터이름 검색"/>
+</div>
+<div class="subject-list" id="subjectList"></div>
+</div>
+</aside>
+<!-- Right: content -->
+<section class="section">
+<div class="section-bar">
+<div>
+<div class="section-title">챕터 목록</div>
+<div class="section-meta" id="resultCount">검색 결과 0건</div>
+</div>
+<div class="section-meta">fotonvr.com inspired UI</div>
+</div>
+<div class="grid" id="chapterGrid"></div>
+<div class="empty" id="emptyState" style="display:none;">데이터가 없습니다. 좌측에서 주제를 선택하거나 검색해보세요.</div>
+</section>
+</div>
+</div>
+<script>
+const EMBEDDED_ROWS = [{"STD": "5", "주제번호": "4", "주제이름": "생물의 구성과 다양성", "챕터번호": "1", "챕터이름": "식품의 부패"}, {"STD": "5", "주제번호": "4", "주제이름": "물질의 상태 변화", "챕터번호": "2", "챕터이름": "우유의 부패"}, {"STD": "5", "주제번호": "7", "주제이름": "물질의 상태 변화", "챕터번호": "3", "챕터이름": "수용성 물질과 불용성 물질"}, {"STD": "5", "주제번호": "11", "주제이름": "기체의 성질", "챕터번호": "1", "챕터이름": "더운 공기와 찬 공기"}, {"STD": "6", "주제번호": "4", "주제이름": "물질의 상태 변화", "챕터번호": "1", "챕터이름": "물질 분리하기"}, {"STD": "6", "주제번호": "4", "주제이름": "물질의 상태 변화", "챕터번호": "2", "챕터이름": "체를 이용한 분리법"}, {"STD": "6", "주제번호": "4", "주제이름": "물질의 상태 변화", "챕터번호": "3", "챕터이름": "여러가지 분리법:침전, 기율여 따르기, 여과법"}, {"STD": "6", "주제번호": "4", "주제이름": "물질의 상태 변화", "챕터번호": "4", "챕터이름": "포화, 증발, 그리고 응축"}, {"STD": "6", "주제번호": "5", "주제이름": "물질의 상태 변화", "챕터번호": "1", "챕터이름": "가역 변화와 비가역 변화-1"}, {"STD": "6", "주제번호": "5", "주제이름": "물질의 상태 변화", "챕터번호": "2", "챕터이름": "가역 변화와 비가역 변화-2"}, {"STD": "6", "주제번호": "5", "주제이름": "물질의 상태 변화", "챕터번호": "3", "챕터이름": "가역 변화와 비가역 변화-3"}, {"STD": "6", "주제번호": "13", "주제이름": "기체의 성질", "챕터번호": "2", "챕터이름": "젖은 옷에서 물이 증발하는 과정"}, {"STD": "6", "주제번호": "14", "주제이름": "기체의 성질", "챕터번호": "3", "챕터이름": "공기 속에 있는 먼지와 연기"}, {"STD": "6", "주제번호": "14", "주제이름": "기체의 성질", "챕터번호": "5", "챕터이름": "공기의 구성 요소"}, {"STD": "6", "주제번호": "15", "주제이름": "과학과 인류의 지속가능한 삶", "챕터번호": "2", "챕터이름": "집에서 재활용 종이 만들기"}, {"STD": "7", "주제번호": "2", "주제이름": "생물의 구성과 다양성", "챕터번호": "2", "챕터이름": "아메바의 영양"}, {"STD": "7", "주제번호": "3", "주제이름": "열과 우리 생활", "챕터번호": "1", "챕터이름": "온도계의 종류"}, {"STD": "7", "주제번호": "3", "주제이름": "기체의 성질", "챕터번호": "3", "챕터이름": "공기의 대류"}, {"STD": "7", "주제번호": "3", "주제이름": "열과 우리 생활", "챕터번호": "4", "챕터이름": "열의 흡수-흰색과 검은색"}, {"STD": "7", "주제번호": "5", "주제이름": "물질의 상태 변화", "챕터번호": "1", "챕터이름": "물리적 변화의 종류-1"}, {"STD": "7", "주제번호": "5", "주제이름": "물질의 상태 변화", "챕터번호": "2", "챕터이름": "물리적 변화의 종류-2"}, {"STD": "7", "주제번호": "7", "주제이름": "기체의 성질", "챕터번호": "2", "챕터이름": "공기가 흐르는 방향"}, {"STD": "7", "주제번호": "7", "주제이름": "열과 우리 생활", "챕터번호": "4", "챕터이름": "열을 가하면 팽창하는 공기"}, {"STD": "7", "주제번호": "12", "주제이름": "생물의 구성과 다양성", "챕터번호": "1", "챕터이름": "줄기절단에 의한 영양번식"}, {"STD": "7", "주제번호": "12", "주제이름": "생물의 구성과 다양성", "챕터번호": "3", "챕터이름": "잎에 의한 영양번식"}, {"STD": "7", "주제번호": "12", "주제이름": "생물의 구성과 다양성", "챕터번호": "4", "챕터이름": "선인장의 영양번식"}, {"STD": "7", "주제번호": "13", "주제이름": "생물의 구성과 다양성", "챕터번호": "1", "챕터이름": "해캄의 분열법에 의한 번식"}, {"STD": "7", "주제번호": "13", "주제이름": "생물의 구성과 다양성", "챕터번호": "3", "챕터이름": "포자로 번식하는 양치 식물"}, {"STD": "7", "주제번호": "15", "주제이름": "열과 우리 생활", "챕터번호": "2", "챕터이름": "시간 측정하기"}, {"STD": "7", "주제번호": "19", "주제이름": "생물의 구성과 다양성", "챕터번호": "1", "챕터이름": "숲에는 누가 살까요?"}, {"STD": "7", "주제번호": "19", "주제이름": "생물의 구성과 다양성", "챕터번호": "2", "챕터이름": "먹이사슬-1"}, {"STD": "7", "주제번호": "19", "주제이름": "생물의 구성과 다양성", "챕터번호": "3", "챕터이름": "먹이사슬-2"}, {"STD": "8", "주제번호": "1", "주제이름": "생물의 구성과 다양성", "챕터번호": "1", "챕터이름": "미생물:유익할까요, 유해할까요?"}, {"STD": "8", "주제번호": "1", "주제이름": "생물의 구성과 다양성", "챕터번호": "2", "챕터이름": "바이러스:확산과 영향"}, {"STD": "8", "주제번호": "1", "주제이름": "생물의 구성과 다양성", "챕터번호": "3", "챕터이름": "곰팡이와 번식"}, {"STD": "8", "주제번호": "5", "주제이름": "열과 우리 생활", "챕터번호": "1", "챕터이름": "연소온도와 발화온도"}, {"STD": "8", "주제번호": "5", "주제이름": "열과 우리 생활", "챕터번호": "2", "챕터이름": "종이컵에 물 데우기"}, {"STD": "8", "주제번호": "5", "주제이름": "열과 우리 생활", "챕터번호": "4", "챕터이름": "연소의 종류"}, {"STD": "8", "주제번호": "6", "주제이름": "생물의 구성과 다양성", "챕터번호": "5", "챕터이름": "무성생식:출아법"}, {"STD": "8", "주제번호": "6", "주제이름": "생물의 구성과 다양성", "챕터번호": "6", "챕터이름": "아메바의 이분법"}, {"STD": "8", "주제번호": "8", "주제이름": "힘의 작용", "챕터번호": "1", "챕터이름": "힘"}, {"STD": "8", "주제번호": "8", "주제이름": "힘의 작용", "챕터번호": "2", "챕터이름": "물체의 운동과 모양에 미치는 힘의 영향"}, {"STD": "8", "주제번호": "8", "주제이름": "힘의 작용", "챕터번호": "3", "챕터이름": "힘의 종류"}, {"STD": "8", "주제번호": "8", "주제이름": "힘의 작용", "챕터번호": "4", "챕터이름": "압력은 무엇일까요?"}, {"STD": "8", "주제번호": "9", "주제이름": "힘의 작용", "챕터번호": "1", "챕터이름": "마찰은 무엇일까요?"}, {"STD": "8", "주제번호": "9", "주제이름": "힘의 작용", "챕터번호": "2", "챕터이름": "마찰력"}, {"STD": "8", "주제번호": "9", "주제이름": "힘의 작용", "챕터번호": "3", "챕터이름": "마찰을 일으키는 요인들"}, {"STD": "8", "주제번호": "9", "주제이름": "힘의 작용", "챕터번호": "4", "챕터이름": "마찰의 장점과 단점"}, {"STD": "8", "주제번호": "9", "주제이름": "힘의 작용", "챕터번호": "5", "챕터이름": "마찰의 증가와 감소"}, {"STD": "8", "주제번호": "9", "주제이름": "힘의 작용", "챕터번호": "6", "챕터이름": "구름 마찰"}, {"STD": "8", "주제번호": "9", "주제이름": "힘의 작용", "챕터번호": "7", "챕터이름": "유체 마찰"}, {"STD": "8", "주제번호": "14", "주제이름": "태양계", "챕터번호": "1", "챕터이름": "지구의 낮과 밤의 주기"}, {"STD": "8", "주제번호": "14", "주제이름": "태양계", "챕터번호": "2", "챕터이름": "달의 위상"}, {"STD": "8", "주제번호": "14", "주제이름": "태양계", "챕터번호": "3", "챕터이름": "태양계"}, {"STD": "8", "주제번호": "14", "주제이름": "태양계", "챕터번호": "7", "챕터이름": "지구의 계절변화"}, {"STD": "9", "주제번호": "1", "주제이름": "물질의 상태 변화", "챕터번호": "2", "챕터이름": "물질의 상태"}, {"STD": "9", "주제번호": "1", "주제이름": "물질의 상태 변화", "챕터번호": "3", "챕터이름": "물질 상태의 변화"}, {"STD": "9", "주제번호": "4", "주제이름": "기체의 성질", "챕터번호": "6", "챕터이름": "희가스(비활성 기체)"}, {"STD": "9", "주제번호": "8", "주제이름": "생물의 구성과 다양성", "챕터번호": "1", "챕터이름": "생물학적 분류"}, {"STD": "9", "주제번호": "8", "주제이름": "생물의 구성과 다양성", "챕터번호": "2", "챕터이름": "5계 분류체계"}, {"STD": "9", "주제번호": "8", "주제이름": "생물의 구성과 다양성", "챕터번호": "6", "챕터이름": "이항 명명법"}, {"STD": "9", "주제번호": "10", "주제이름": "힘의 작용", "챕터번호": "1", "챕터이름": "힘의 평형과 불균형력"}, {"STD": "9", "주제번호": "11", "주제이름": "태양계", "챕터번호": "3", "챕터이름": "지구와 달에 있는 물체의 질량과 무게"}, {"STD": "9", "주제번호": "11", "주제이름": "힘의 작용", "챕터번호": "4", "챕터이름": "추력과 압력"}, {"STD": "9", "주제번호": "11", "주제이름": "힘의 작용", "챕터번호": "5", "챕터이름": "아르키메데스 원리"}, {"STD": "9", "주제번호": "12", "주제이름": "힘의 작용", "챕터번호": "2", "챕터이름": "동력"}, {"STD": "9", "주제번호": "17", "주제이름": "과학과 인류의 지속가능한 삶", "챕터번호": "3", "챕터이름": "대기오염:원인과 결과"}, {"STD": "9", "주제번호": "17", "주제이름": "과학과 인류의 지속가능한 삶", "챕터번호": "4", "챕터이름": "수질오염:원인과 결과"}, {"STD": "10", "주제번호": "12", "주제이름": "생물의 구성과 다양성", "챕터번호": "1", "챕터이름": "히드라의 재생"}, {"STD": "10", "주제번호": "23", "주제이름": "생물의 구성과 다양성", "챕터번호": "1", "챕터이름": "먹이사슬"}, {"STD": "10", "주제번호": "23", "주제이름": "생물의 구성과 다양성", "챕터번호": "2", "챕터이름": "먹이그물"}, {"STD": "10", "주제번호": "23", "주제이름": "과학과 인류의 지속가능한 삶", "챕터번호": "3", "챕터이름": "오존층과 오존층 파괴"}];
+
+// State
+let rows = EMBEDDED_ROWS.slice();
+let imagesMap = loadImages();
+let selectedSubject = "";
+let query = "";
+
+// Utils
+function keyOf(r){ return [r['STD'], r['주제번호'], r['챕터번호'], r['주제이름'], r['챕터이름']].join('::'); }
+function loadImages(){ try{ return JSON.parse(localStorage.getItem('foton_m1_images_v1')) || {}; } catch(e){ return {}; } }
+function saveImages(){ localStorage.setItem('foton_m1_images_v1', JSON.stringify(imagesMap)); }
+
+// Grouped subjects by name
+function subjects(){
+  const map = new Map();
+  rows.forEach(r=>{
+    const name = String(r['주제이름']||'').trim();
+    const no = String(r['주제번호']||'').trim();
+    if(!name) return;
+    if(!map.has(name)) map.set(name,{name, nos:new Set()});
+    if(no) map.get(name).nos.add(no);
+  });
+  return Array.from(map.values()).map(s=>({name:s.name, nos:Array.from(s.nos).sort((a,b)=>parseFloat(a)-parseFloat(b))}))
+             .sort((a,b)=> a.name.localeCompare(b.name,'ko'));
+}
+
+// Filtered chapters
+function filteredChapters(){
+  const q = query.trim().toLowerCase();
+  return rows.filter(r=>{
+    const subjMatch = selectedSubject ? (r['주제이름']===selectedSubject) : true;
+    if(!q) return subjMatch;
+    const hay = (r['주제이름']+' '+r['챕터이름']).toLowerCase();
+    return subjMatch && hay.includes(q);
+  }).map(r=>({
+    key: keyOf(r),
+    std: String(r['STD']||''),
+    subjNo: String(r['주제번호']||''),
+    subjName: String(r['주제이름']||''),
+    chapNo: String(r['챕터번호']||''),
+    chapName: String(r['챕터이름']||'')
+  })).sort((a,b)=>{
+    const s = a.subjName.localeCompare(b.subjName,'ko'); if(s!==0) return s;
+    const an = parseFloat(a.chapNo), bn = parseFloat(b.chapNo);
+    if(!isNaN(an) && !isNaN(bn)) return an-bn;
+    return a.chapNo.localeCompare(b.chapNo,'ko');
+  });
+}
+
+// DOM
+const subjectList = document.getElementById('subjectList');
+const chapterGrid = document.getElementById('chapterGrid');
+const resultCount = document.getElementById('resultCount');
+
+function renderSubjects(){
+  subjectList.innerHTML='';
+  const all = document.createElement('button');
+  all.className = 'pill-item' + (selectedSubject===''?' active':'');
+  all.textContent = '전체 보기';
+  all.onclick = ()=>{ selectedSubject=''; renderAll(); };
+  subjectList.appendChild(all);
+
+  subjects().forEach(s=>{
+    const btn = document.createElement('button');
+    btn.className = 'pill-item' + (selectedSubject===s.name?' active':'');
+    const nos = '';
+    btn.innerHTML = '<div>'+s.name+'</div>' + (nos?'<span class="pill-sub">'+nos+'</span>':'');
+    btn.onclick = ()=>{ selectedSubject=s.name; renderAll(); };
+    subjectList.appendChild(btn);
+  });
+}
+
+function renderChapters(){
+  const list = filteredChapters();
+  chapterGrid.innerHTML='';
+  document.getElementById('emptyState').style.display = list.length? 'none':'block';
+  resultCount.textContent = '검색 결과 ' + list.length.toLocaleString() + '건';
+
+  list.forEach(ch=>{
+    const card = document.createElement('div');
+    card.className='card';
+
+    // Card body
+    const body = document.createElement('div');
+    body.className='row';
+    body.innerHTML = ''
+      + '<div class="thumb">'+ (imagesMap[ch.key] ? '<img src="'+imagesMap[ch.key]+'"/>' : '🖼️') + '</div>'
+      + '<div style="flex:1;min-width:0;">'
+      +   '<div style="font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="'+ch.chapName+'">'+ch.chapName+'</div>'
+      +   '<div class="meta" title="'+ch.subjName+'">'+ch.subjName+'</div>'
+      +   '<div class="nums">'
+      +     '<span class="tag">STD '+(ch.std||'-')+'</span>'
+      +     '<span class="tag">주제번호 '+(ch.subjNo||'-')+'</span>'
+      +     '<span class="tag">챕터번호 '+(ch.chapNo||'-')+'</span>'
+      +   '</div>'
+      + '</div>';
+    card.appendChild(body);
+
+    // Actions
+    const actions = document.createElement('div');
+    actions.className='actions';
+    const openBtn = document.createElement('button');
+    openBtn.className='btn'; openBtn.textContent='상세 보기';
+    const uploadLabel = document.createElement('label');
+    uploadLabel.className='btn ghost'; uploadLabel.innerHTML = '<input type="file" accept="image/*" style="display:none"/>이미지 추가';
+    actions.appendChild(openBtn);
+    actions.appendChild(uploadLabel);
+    card.appendChild(actions);
+
+    // 새창으로 큰 이미지 열기
+    openBtn.onclick = () => { const src = imagesMap[ch.key] || ''; openLightbox(src, ch.chapName); };
+    // Upload (per-card, not inside expand)
+    const input = uploadLabel.querySelector('input');
+    input.onchange = (e)=>{
+      const f = e.target.files && e.target.files[0]; if(!f) return;
+      const fr = new FileReader();
+      fr.onload = ()=>{ imagesMap[ch.key]=fr.result; saveImages(); renderAll(); showToast('이미지 저장 완료');};
+      fr.readAsDataURL(f);
+    };
+
+    chapterGrid.appendChild(card);
+  });
+}
+
+function renderAll(){ renderSubjects(); renderChapters(); }
+document.getElementById('searchInput').addEventListener('input', (e)=>{ query = e.target.value; renderChapters(); });
+renderAll();
+
+// === 새창 이미지 뷰어 ===
+function openImageWin(src, title){
+  const w = window.open('', '_blank');
+  if (!w) { alert('팝업이 차단되었습니다. 브라우저에서 팝업을 허용해주세요.'); return; }
+  const safeTitle = (title || '이미지').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const body = src 
+    ? '<img src="'+src+'" alt="'+safeTitle+'" />'
+    : '<div style="color:#fff;font:14px/1.6 system-ui, -apple-system, Segoe UI, Roboto, \'Noto Sans KR\', Arial, sans-serif;">이미지가 없습니다.</div>';
+  const doc = `<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>${safeTitle}</title>
+<style>
+  html, body { height:100%; margin:0; background:#000; display:flex; align-items:center; justify-content:center; }
+  img { max-width:95vw; max-height:95vh; object-fit:contain; display:block; }
+
+/* === 라이트박스 === */
+.lightbox{position:fixed; inset:0; background:rgba(0,0,0,.88); display:none; align-items:center; justify-content:center; z-index:9999; padding:24px;}
+.lightbox.show{display:flex;}
+.lightbox img{max-width:95vw; max-height:95vh; object-fit:contain; display:block; background:#000; border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,.6);}
+.lightbox .close{position:absolute; top:16px; right:16px; background:#ffffff; color:#111827; border:1px solid #e5e7eb; border-radius:10px; padding:8px 12px; cursor:pointer; font-weight:700;}
+.lightbox .msg{color:#e5e7eb; font-size:14px;}
+
+
+/* 저장 토스트 */
+.toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%); background:#111827; color:#fff; border:1px solid #374151; border-radius:12px; padding:10px 14px; box-shadow:0 10px 24px rgba(0,0,0,.3); opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease; z-index:10000;}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(-6px);}
+
+</style>
+</head><body>${body}
+<div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="이미지 라이트박스">
+  <button class="close" id="lightboxClose">닫기</button>
+  <img id="lightboxImg" alt="chapter full"/>
+  <div id="lightboxMsg" class="msg" style="display:none;">이미지가 없습니다.</div>
+</div>
+
+<div id="toast" class="toast">이미지 저장 완료</div>
+</body></html>`;
+  w.document.open();
+  w.document.write(doc);
+  w.document.close();
+}
+
+
+
+// === Lightbox Logic (dynamic wiring) ===
+let __lb_last_focus = null;
+function openLightbox(src, title){
+  const lb = document.getElementById('lightbox');
+  const img = document.getElementById('lightboxImg');
+  const msg = document.getElementById('lightboxMsg');
+  const btn = document.getElementById('lightboxClose');
+  __lb_last_focus = document.activeElement;
+
+  if (src){
+    img.src = src;
+    img.style.display = 'block';
+    msg.style.display = 'none';
+  } else {
+    img.removeAttribute('src');
+    img.style.display = 'none';
+    msg.style.display = 'block';
+  }
+
+  // Wire events only once, at first open (elements now definitely exist)
+  if (!lb.dataset.bound){
+    btn.addEventListener('click', closeLightbox);
+    lb.addEventListener('click', (e)=>{ if (e.target === e.currentTarget) closeLightbox(); });
+    document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') closeLightbox(); });
+    lb.dataset.bound = '1';
+  }
+
+  lb.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox(){
+  const lb = document.getElementById('lightbox');
+  lb.classList.remove('show');
+  document.body.style.overflow = '';
+  if (__lb_last_focus && typeof __lb_last_focus.focus === 'function'){
+    setTimeout(()=>{ try { __lb_last_focus.focus(); } catch(e){} }, 0);
+  }
+}
+
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg || '저장 완료';
+  t.classList.add('show');
+  setTimeout(()=> t.classList.remove('show'), 1800);
+}
+
+</script>
+
+<div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="이미지 라이트박스">
+  <button class="close" id="lightboxClose">닫기</button>
+  <img id="lightboxImg" alt="chapter full"/>
+  <div id="lightboxMsg" class="msg" style="display:none;">이미지가 없습니다.</div>
+</div>
+
+<div id="toast" class="toast">이미지 저장 완료</div>
+</body>
+</html>
